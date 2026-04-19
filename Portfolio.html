@@ -1,0 +1,697 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Harbor Kim — Product / UI UX Designer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script>
+  // ---- Tweakable defaults ----
+  const TWEAKS = /*EDITMODE-BEGIN*/{
+    "theme": "light",
+    "accent": "#111111"
+  }/*EDITMODE-END*/;
+</script>
+<style>
+  :root{
+    --bg: #FAFAF7;
+    --fg: #111111;
+    --muted: #6b6b66;
+    --line: #1111111a;
+    --line-strong: #11111133;
+    --paper: #F3F2EC;
+    --accent: #111111;
+    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --maxw: 1280px;
+    --gutter: clamp(20px, 4vw, 56px);
+  }
+  html[data-theme="dark"]{
+    --bg:#0E0E0C;
+    --fg:#F1EFE7;
+    --muted:#8b8b83;
+    --line:#f1efe722;
+    --line-strong:#f1efe744;
+    --paper:#171714;
+  }
+  html[data-theme="custom"]{
+    --bg:#EFE9DD;
+    --fg:#1B1B18;
+    --muted:#6a6659;
+    --line:#1b1b1822;
+    --line-strong:#1b1b1844;
+    --paper:#E4DECF;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);font-family:var(--mono);font-weight:400;-webkit-font-smoothing:antialiased}
+  body{font-size:14px;line-height:1.55;letter-spacing:0.005em}
+  a{color:inherit;text-decoration:none}
+  a.link{border-bottom:1px solid var(--line-strong)}
+  a.link:hover{border-bottom-color:var(--fg)}
+  ::selection{background:var(--fg);color:var(--bg)}
+
+  /* ---------- Layout shell ---------- */
+  .shell{max-width:var(--maxw);margin:0 auto;padding:0 var(--gutter)}
+  .rule{height:1px;background:var(--line);width:100%}
+  .rule-strong{height:1px;background:var(--line-strong);width:100%}
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    position:fixed;top:0;left:0;right:0;z-index:40;
+    background:color-mix(in srgb, var(--bg) 86%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar .inner{display:flex;align-items:center;justify-content:space-between;height:48px;padding:0 var(--gutter);max-width:var(--maxw);margin:0 auto}
+  .topbar .brand{display:flex;gap:10px;align-items:center;font-size:12px;letter-spacing:.02em}
+  .topbar .brand .dot{width:6px;height:6px;border-radius:999px;background:var(--fg)}
+  .topbar nav{display:flex;gap:18px;font-size:12px;color:var(--muted)}
+  .topbar nav a{position:relative;padding:2px 0}
+  .topbar nav a[aria-current="true"]{color:var(--fg)}
+  .topbar nav a[aria-current="true"]::before{content:"◆ ";color:var(--fg)}
+  .topbar .meta{display:flex;gap:16px;font-size:12px;color:var(--muted);align-items:center}
+
+  /* ---------- Scroll progress ---------- */
+  .progress{position:fixed;top:48px;left:0;height:1px;background:var(--fg);width:0;z-index:41;transition:width .08s linear}
+
+  /* ---------- Side rail ---------- */
+  .rail{
+    position:fixed;left:var(--gutter);top:50%;transform:translateY(-50%);
+    z-index:30;font-size:11px;color:var(--muted);
+    display:flex;flex-direction:column;gap:10px;
+    mix-blend-mode:normal;
+  }
+  .rail a{display:flex;align-items:center;gap:10px;opacity:.6;transition:opacity .25s}
+  .rail a .tick{width:14px;height:1px;background:currentColor;display:inline-block}
+  .rail a.on{opacity:1;color:var(--fg)}
+  .rail a.on .tick{width:28px}
+  @media (max-width:900px){.rail{display:none}}
+
+  /* ---------- Section common ---------- */
+  section{padding:96px 0;position:relative}
+  .section-head{display:grid;grid-template-columns:120px 1fr;gap:24px;margin-bottom:40px;align-items:baseline}
+  .section-head .idx{font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+  .section-head h2{margin:0;font-weight:400;font-size:clamp(22px,2.4vw,30px);letter-spacing:-0.01em}
+  .section-head .sub{grid-column:2;font-size:12px;color:var(--muted);max-width:56ch;margin-top:8px}
+
+  /* ---------- Hero ---------- */
+  .hero{padding-top:160px;padding-bottom:120px;min-height:92vh;display:flex;flex-direction:column;justify-content:space-between}
+  .hero .tag{display:flex;gap:10px;font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+  .hero .tag .blink{width:6px;height:6px;border-radius:999px;background:#22a06b;display:inline-block;align-self:center;animation:blink 1.6s infinite}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+  .hero h1{
+    font-family:var(--mono);
+    font-weight:400;
+    font-size:clamp(40px,7.2vw,104px);
+    line-height:1.02;
+    letter-spacing:-0.035em;
+    margin:32px 0 0;
+    max-width:14ch;
+  }
+  .hero h1 .em{font-style:italic;color:var(--muted)}
+  .hero .meta-row{
+    margin-top:auto;
+    display:grid;grid-template-columns:repeat(12,1fr);gap:24px;
+    padding-top:48px;border-top:1px solid var(--line);
+    font-size:12px;color:var(--muted);
+  }
+  .hero .meta-row .cell{grid-column:span 3}
+  .hero .meta-row .label{display:block;color:var(--muted);text-transform:uppercase;font-size:10px;letter-spacing:.1em;margin-bottom:8px}
+  .hero .meta-row .val{color:var(--fg)}
+  @media (max-width:700px){
+    .hero .meta-row .cell{grid-column:span 6}
+  }
+
+  .hero .scroll-cue{position:absolute;right:var(--gutter);bottom:32px;font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:8px}
+  .hero .scroll-cue .bar{width:1px;height:40px;background:linear-gradient(var(--fg), transparent);animation:pulse 2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scaleY(.4);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}}
+
+  /* ---------- About ---------- */
+  .about-grid{display:grid;grid-template-columns:120px 1fr 1fr;gap:64px;align-items:start}
+  .about-grid p{font-size:16px;line-height:1.7;margin:0 0 16px;max-width:52ch}
+  .about-grid .col-meta{font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:20px}
+  .about-grid .col-meta .k{text-transform:uppercase;font-size:10px;letter-spacing:.1em;margin-bottom:6px;color:var(--muted)}
+  .about-grid .col-meta .v{color:var(--fg);font-size:13px}
+  @media (max-width:900px){.about-grid{grid-template-columns:1fr;gap:32px}}
+
+  /* ---------- Work ---------- */
+  .work-list{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line-strong)}
+  .case{
+    display:grid;grid-template-columns:120px 1fr 1fr;gap:48px;
+    padding:56px 0;border-bottom:1px solid var(--line);
+    position:relative;
+  }
+  .case .num{font-size:11px;color:var(--muted);letter-spacing:.08em}
+  .case h3{margin:0 0 8px;font-weight:400;font-size:clamp(28px,3.4vw,44px);letter-spacing:-0.02em;line-height:1.05}
+  .case .sub{color:var(--muted);font-size:13px;margin-bottom:20px}
+  .case .chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+  .case .chip{font-size:10px;text-transform:uppercase;letter-spacing:.1em;padding:4px 8px;border:1px solid var(--line-strong);color:var(--muted)}
+  .case .meta-list{display:grid;grid-template-columns:1fr 1fr;gap:14px 24px;font-size:12px;color:var(--muted);margin-top:8px}
+  .case .meta-list .k{display:block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
+  .case .meta-list .v{color:var(--fg);font-size:12px}
+  .case .visual{
+    position:relative;background:var(--paper);aspect-ratio:4/3;
+    overflow:hidden;border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .case .visual .placeholder{
+    position:absolute;inset:0;
+    background-image:
+      repeating-linear-gradient(135deg, transparent 0 14px, color-mix(in srgb, var(--fg) 6%, transparent) 14px 15px);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+    color:var(--muted);font-size:11px;letter-spacing:.08em;text-transform:uppercase;text-align:center;padding:24px;
+  }
+  .case .visual .placeholder .big{color:var(--fg);font-size:13px;letter-spacing:.04em;text-transform:none;max-width:24ch}
+  .case .visual .parallax{position:absolute;inset:0;transform:translateY(var(--py,0));will-change:transform}
+
+  .case .read{display:inline-flex;align-items:center;gap:10px;margin-top:20px;font-size:12px;border-bottom:1px solid var(--fg);padding-bottom:2px;align-self:start;width:max-content}
+  .case .read::after{content:"→";display:inline-block;transition:transform .25s}
+  .case:hover .read::after{transform:translateX(4px)}
+
+  /* Case study body */
+  .case-body{
+    grid-column:1/-1;margin-top:40px;display:none;
+    border-top:1px solid var(--line);padding-top:40px;
+  }
+  .case.open .case-body{display:grid;grid-template-columns:120px 1fr 1fr;gap:48px}
+  .case-body h4{font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin:0 0 8px;color:var(--muted);font-weight:400}
+  .case-body p{font-size:14px;line-height:1.7;margin:0 0 16px;max-width:56ch}
+  .case-body .block{margin-bottom:28px}
+  .case-body .stat{display:flex;gap:6px;align-items:baseline}
+  .case-body .stat .n{font-size:36px;letter-spacing:-0.02em}
+  .case-body .stat .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+  .case-body .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:24px 0}
+  @media (max-width:900px){
+    .case{grid-template-columns:1fr;gap:24px}
+    .case.open .case-body{grid-template-columns:1fr}
+    .case .meta-list{grid-template-columns:1fr}
+  }
+
+  /* ---------- Resume ---------- */
+  .resume-grid{display:grid;grid-template-columns:120px 1fr;gap:48px}
+  .resume-block{margin-bottom:48px}
+  .resume-block h4{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:400;margin:0 0 16px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+  .resume-row{display:grid;grid-template-columns:140px 1fr 1fr;gap:32px;padding:14px 0;border-bottom:1px solid var(--line);font-size:13px;align-items:baseline}
+  .resume-row .yr{color:var(--muted);font-size:12px}
+  .resume-row .role{font-size:14px}
+  .resume-row .co{color:var(--muted);font-size:12px}
+  .skill-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px 24px;font-size:12px;color:var(--muted)}
+  .skill-grid .s{color:var(--fg)}
+  @media (max-width:900px){.resume-grid,.resume-row{grid-template-columns:1fr}.skill-grid{grid-template-columns:repeat(2,1fr)}}
+
+  /* ---------- Contact ---------- */
+  .contact{padding:120px 0 160px}
+  .contact .big{
+    font-family:var(--mono);font-weight:400;
+    font-size:clamp(36px,6.5vw,92px);line-height:1.05;
+    letter-spacing:-0.03em;margin:0 0 48px;max-width:16ch;
+  }
+  .contact .big .em{font-style:italic;color:var(--muted)}
+  .contact-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;padding-top:32px;border-top:1px solid var(--line);font-size:12px}
+  .contact-grid .k{color:var(--muted);text-transform:uppercase;font-size:10px;letter-spacing:.1em;margin-bottom:8px;display:block}
+  .contact-grid .v{font-size:13px}
+  @media (max-width:700px){.contact-grid{grid-template-columns:1fr 1fr}}
+
+  /* ---------- Footer ---------- */
+  footer{padding:24px 0;border-top:1px solid var(--line);font-size:11px;color:var(--muted)}
+  footer .inner{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+  /* ---------- Reveal animation ---------- */
+  .reveal{opacity:0;transform:translateY(14px);transition:opacity .7s ease, transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+  .reveal-stagger > *{opacity:0;transform:translateY(10px);transition:opacity .6s ease, transform .6s ease;transition-delay:calc(var(--i,0) * 60ms)}
+  .reveal-stagger.in > *{opacity:1;transform:none}
+
+  /* ---------- Tweak panel ---------- */
+  .tweaks{
+    position:fixed;right:20px;bottom:20px;z-index:60;
+    background:var(--bg);border:1px solid var(--line-strong);
+    font-size:11px;min-width:240px;display:none;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+  }
+  .tweaks.on{display:block}
+  .tweaks header{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line);letter-spacing:.08em;text-transform:uppercase;font-size:10px;color:var(--muted)}
+  .tweaks header .x{cursor:pointer;color:var(--muted)}
+  .tweaks .row{display:flex;gap:8px;padding:12px 14px;align-items:center;justify-content:space-between}
+  .tweaks .row label{color:var(--muted);text-transform:uppercase;font-size:10px;letter-spacing:.08em}
+  .tweaks .seg{display:flex;border:1px solid var(--line-strong)}
+  .tweaks .seg button{background:transparent;border:none;color:var(--muted);font:inherit;padding:6px 10px;cursor:pointer;font-family:var(--mono);font-size:11px}
+  .tweaks .seg button.on{background:var(--fg);color:var(--bg)}
+
+</style>
+</head>
+<body>
+
+<!-- ============ TOP BAR ============ -->
+<div class="topbar">
+  <div class="inner">
+    <div class="brand">
+      <span class="dot"></span>
+      <span>HARBOR&nbsp;KIM&nbsp;/&nbsp;PRODUCT&nbsp;DESIGNER</span>
+    </div>
+    <nav id="topnav">
+      <a href="#hero" data-nav="hero">Index</a>
+      <a href="#about" data-nav="about">About</a>
+      <a href="#work" data-nav="work">Work</a>
+      <a href="#resume" data-nav="resume">Resume</a>
+      <a href="#contact" data-nav="contact">Contact</a>
+    </nav>
+    <div class="meta">
+      <span id="clock">—</span>
+      <span>SEOUL</span>
+    </div>
+  </div>
+</div>
+<div class="progress" id="progress"></div>
+
+<!-- ============ SIDE RAIL ============ -->
+<aside class="rail" id="rail">
+  <a href="#hero" data-rail="hero"><span class="tick"></span><span>00 &nbsp;Index</span></a>
+  <a href="#about" data-rail="about"><span class="tick"></span><span>01 &nbsp;About</span></a>
+  <a href="#work" data-rail="work"><span class="tick"></span><span>02 &nbsp;Work</span></a>
+  <a href="#resume" data-rail="resume"><span class="tick"></span><span>03 &nbsp;Resume</span></a>
+  <a href="#contact" data-rail="contact"><span class="tick"></span><span>04 &nbsp;Contact</span></a>
+</aside>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="hero">
+  <div class="shell">
+    <div class="tag reveal"><span class="blink"></span><span>AVAILABLE FOR SELECT PROJECTS — 2026</span></div>
+    <h1 class="reveal">
+      Designing calm,<br>
+      useful interfaces for<br>
+      <span class="em">fintech</span> &amp; <span class="em">learning.</span>
+    </h1>
+  </div>
+  <div class="shell">
+    <div class="meta-row reveal-stagger">
+      <div class="cell" style="--i:0"><span class="label">Role</span><span class="val">Product / UI · UX</span></div>
+      <div class="cell" style="--i:1"><span class="label">Focus</span><span class="val">Fintech · E-learning</span></div>
+      <div class="cell" style="--i:2"><span class="label">Based in</span><span class="val">Seoul, KR</span></div>
+      <div class="cell" style="--i:3"><span class="label">Index</span><span class="val">4 selected works</span></div>
+    </div>
+  </div>
+  <div class="scroll-cue"><span>Scroll</span><span class="bar"></span></div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section id="about">
+  <div class="shell">
+    <div class="section-head reveal">
+      <div class="idx">01 / About</div>
+      <h2>A product designer who listens before drawing.</h2>
+    </div>
+    <div class="about-grid">
+      <div class="idx" style="font-size:11px;color:var(--muted);letter-spacing:.08em">{\\ bio}</div>
+      <div class="reveal">
+        <p>I'm Harbor — a product &amp; UI/UX designer working primarily in fintech and e-learning. I care about the interfaces people use every day: the ones that handle their money, their attention, their time.</p>
+        <p>My work is built on research, systems thinking, and a quiet editorial sensibility. I believe the best tools disappear — until you need them.</p>
+        <p>I've shipped work with early-stage startups and established platforms, led end-to-end flows from discovery through handoff, and maintained design systems that grew with the team.</p>
+      </div>
+      <div class="col-meta reveal">
+        <div><span class="k">Currently</span><span class="v">Senior Product Designer,<br>Fintech (NDA)</span></div>
+        <div><span class="k">Past</span><span class="v">E-learning platforms,<br>Consumer banking, B2B tools</span></div>
+        <div><span class="k">Toolkit</span><span class="v">Figma · Framer · Principle · Notion · Protopie</span></div>
+        <div><span class="k">Languages</span><span class="v">Korean (native) · English (fluent)</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WORK ============ -->
+<section id="work">
+  <div class="shell">
+    <div class="section-head reveal">
+      <div class="idx">02 / Selected work</div>
+      <h2>Four projects, end-to-end.</h2>
+      <div class="sub">Click any case to expand. Visuals are placeholders — drop in your real shots and copy when ready.</div>
+    </div>
+
+    <div class="work-list" id="workList">
+      <!-- Case 1 -->
+      <article class="case" data-case>
+        <div class="num">/01</div>
+        <div>
+          <h3>Project One</h3>
+          <div class="sub">A consumer fintech app — rethinking the home screen and transfer flow.</div>
+          <div class="chips">
+            <span class="chip">Fintech</span><span class="chip">iOS</span><span class="chip">Design System</span>
+          </div>
+          <div class="meta-list">
+            <div><span class="k">Role</span><span class="v">Lead Product Designer</span></div>
+            <div><span class="k">Year</span><span class="v">2025</span></div>
+            <div><span class="k">Team</span><span class="v">1 PM · 3 Eng · 1 Designer</span></div>
+            <div><span class="k">Duration</span><span class="v">16 weeks</span></div>
+          </div>
+          <a class="read" data-toggle>Read case study</a>
+        </div>
+        <div class="visual">
+          <div class="parallax placeholder">
+            <span class="big">{ drop product shot — 4:3 }</span>
+            <span>Project One · Home + Transfer</span>
+          </div>
+        </div>
+        <div class="case-body">
+          <div class="num">/01 &nbsp;body</div>
+          <div>
+            <div class="block"><h4>Context</h4><p>Briefly describe the product, the user, and the problem. What made this work matter? What constraints shaped it?</p></div>
+            <div class="block"><h4>Approach</h4><p>How did you move from problem to solution? Research, frameworks, principles you anchored to. A few bullets of what you tried and rejected.</p></div>
+            <div class="stats">
+              <div class="stat"><span class="n">+32%</span><span class="l">activation</span></div>
+              <div class="stat"><span class="n">−44%</span><span class="l">support load</span></div>
+              <div class="stat"><span class="n">4.8</span><span class="l">app store</span></div>
+            </div>
+          </div>
+          <div>
+            <div class="block"><h4>Outcome</h4><p>What shipped, what you learned, what you'd do next. Keep it honest; portfolios that admit tradeoffs read better than ones that don't.</p></div>
+            <div class="block"><h4>Credits</h4><p>PM — Name<br>Eng — Name, Name<br>Design partner — Name</p></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Case 2 -->
+      <article class="case" data-case>
+        <div class="num">/02</div>
+        <div>
+          <h3>Project Two</h3>
+          <div class="sub">E-learning platform — adaptive lesson player and teacher dashboard.</div>
+          <div class="chips">
+            <span class="chip">E-learning</span><span class="chip">Web</span><span class="chip">Dashboard</span>
+          </div>
+          <div class="meta-list">
+            <div><span class="k">Role</span><span class="v">Product Designer</span></div>
+            <div><span class="k">Year</span><span class="v">2024</span></div>
+            <div><span class="k">Team</span><span class="v">2 PM · 5 Eng · 2 Designers</span></div>
+            <div><span class="k">Duration</span><span class="v">22 weeks</span></div>
+          </div>
+          <a class="read" data-toggle>Read case study</a>
+        </div>
+        <div class="visual">
+          <div class="parallax placeholder">
+            <span class="big">{ drop product shot — 4:3 }</span>
+            <span>Project Two · Lesson + Dashboard</span>
+          </div>
+        </div>
+        <div class="case-body">
+          <div class="num">/02 &nbsp;body</div>
+          <div>
+            <div class="block"><h4>Context</h4><p>Describe the learner, the teacher, and the gap between them. What signals did the product need to surface to close it?</p></div>
+            <div class="block"><h4>Approach</h4><p>How you reframed the lesson as a conversation rather than a container. Principles you wrote for adaptive behavior.</p></div>
+          </div>
+          <div>
+            <div class="block"><h4>Outcome</h4><p>Impact on completion rates, teacher time-saved, qualitative feedback. Include one quote from a user if you have it.</p></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Case 3 -->
+      <article class="case" data-case>
+        <div class="num">/03</div>
+        <div>
+          <h3>Project Three</h3>
+          <div class="sub">B2B fintech — onboarding, KYC, and first-run empty states.</div>
+          <div class="chips">
+            <span class="chip">Fintech</span><span class="chip">B2B</span><span class="chip">Onboarding</span>
+          </div>
+          <div class="meta-list">
+            <div><span class="k">Role</span><span class="v">Product Designer</span></div>
+            <div><span class="k">Year</span><span class="v">2023</span></div>
+            <div><span class="k">Team</span><span class="v">1 PM · 2 Eng</span></div>
+            <div><span class="k">Duration</span><span class="v">10 weeks</span></div>
+          </div>
+          <a class="read" data-toggle>Read case study</a>
+        </div>
+        <div class="visual">
+          <div class="parallax placeholder">
+            <span class="big">{ drop product shot — 4:3 }</span>
+            <span>Project Three · KYC Flow</span>
+          </div>
+        </div>
+        <div class="case-body">
+          <div class="num">/03 &nbsp;body</div>
+          <div>
+            <div class="block"><h4>Context</h4><p>Describe the regulatory constraints and why the default KYC flow was hostile to small teams. What was the opportunity?</p></div>
+          </div>
+          <div>
+            <div class="block"><h4>Outcome</h4><p>Numbers on drop-off, time-to-approval, and qualitative moments you're proud of.</p></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Case 4 -->
+      <article class="case" data-case>
+        <div class="num">/04</div>
+        <div>
+          <h3>Project Four</h3>
+          <div class="sub">Design system — foundations, components, documentation site.</div>
+          <div class="chips">
+            <span class="chip">Design System</span><span class="chip">Tokens</span><span class="chip">Docs</span>
+          </div>
+          <div class="meta-list">
+            <div><span class="k">Role</span><span class="v">Design Systems Lead</span></div>
+            <div><span class="k">Year</span><span class="v">2023</span></div>
+            <div><span class="k">Team</span><span class="v">2 Designers · 1 Eng</span></div>
+            <div><span class="k">Duration</span><span class="v">Ongoing</span></div>
+          </div>
+          <a class="read" data-toggle>Read case study</a>
+        </div>
+        <div class="visual">
+          <div class="parallax placeholder">
+            <span class="big">{ drop product shot — 4:3 }</span>
+            <span>Project Four · System Docs</span>
+          </div>
+        </div>
+        <div class="case-body">
+          <div class="num">/04 &nbsp;body</div>
+          <div>
+            <div class="block"><h4>Context</h4><p>How the system came to be — an inventory audit, a token proposal, a slow adoption curve.</p></div>
+          </div>
+          <div>
+            <div class="block"><h4>Outcome</h4><p>Adoption %, bug-fix cycle time, and how the team talks about UI differently now.</p></div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RESUME ============ -->
+<section id="resume">
+  <div class="shell">
+    <div class="section-head reveal">
+      <div class="idx">03 / Resume</div>
+      <h2>Experience, education, skills.</h2>
+    </div>
+
+    <div class="resume-grid">
+      <div class="idx" style="font-size:11px;color:var(--muted);letter-spacing:.08em">{\\ cv}</div>
+      <div>
+        <div class="resume-block reveal">
+          <h4>Experience</h4>
+          <div class="resume-row"><span class="yr">2024 — Now</span><span class="role">Senior Product Designer</span><span class="co">Fintech · Seoul</span></div>
+          <div class="resume-row"><span class="yr">2022 — 2024</span><span class="role">Product Designer</span><span class="co">E-learning platform · Remote</span></div>
+          <div class="resume-row"><span class="yr">2020 — 2022</span><span class="role">UI/UX Designer</span><span class="co">Consumer banking · Seoul</span></div>
+          <div class="resume-row"><span class="yr">2019 — 2020</span><span class="role">Junior Designer</span><span class="co">Agency · Seoul</span></div>
+        </div>
+
+        <div class="resume-block reveal">
+          <h4>Education</h4>
+          <div class="resume-row"><span class="yr">2015 — 2019</span><span class="role">B.A. Visual Communication Design</span><span class="co">University</span></div>
+        </div>
+
+        <div class="resume-block reveal">
+          <h4>Recognition</h4>
+          <div class="resume-row"><span class="yr">2024</span><span class="role">Awwwards — Site of the Day (team)</span><span class="co">—</span></div>
+          <div class="resume-row"><span class="yr">2023</span><span class="role">Speaker — Design Systems Seoul</span><span class="co">—</span></div>
+        </div>
+
+        <div class="resume-block reveal">
+          <h4>Skills</h4>
+          <div class="skill-grid">
+            <span class="s">Product thinking</span><span class="s">UX research</span><span class="s">Interaction design</span><span class="s">Prototyping</span>
+            <span class="s">Design systems</span><span class="s">Visual design</span><span class="s">Figma</span><span class="s">Framer</span>
+            <span class="s">Protopie</span><span class="s">Notion</span><span class="s">HTML / CSS</span><span class="s">Light JS</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section class="contact" id="contact">
+  <div class="shell">
+    <div class="section-head reveal">
+      <div class="idx">04 / Contact</div>
+      <h2>Let's talk.</h2>
+    </div>
+    <h3 class="big reveal">Got a project, a problem,<br>or a <span class="em">slow afternoon?</span><br>Drop a line.</h3>
+    <div class="contact-grid reveal-stagger">
+      <div style="--i:0"><span class="k">Email</span><a class="v link" href="mailto:hello@harborkim.com">hello@harborkim.com</a></div>
+      <div style="--i:1"><span class="k">LinkedIn</span><a class="v link" href="#">/in/harborkim</a></div>
+      <div style="--i:2"><span class="k">Are.na</span><a class="v link" href="#">/harborkim</a></div>
+      <div style="--i:3"><span class="k">Read.cv</span><a class="v link" href="#">/harborkim</a></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="shell inner">
+    <span>© 2026 HARBOR KIM — ALL RIGHTS RESERVED</span>
+    <span id="colo">KR · SEOUL · <span id="clock2">—</span></span>
+  </div>
+</footer>
+
+<!-- ============ TWEAKS ============ -->
+<div class="tweaks" id="tweaks">
+  <header>
+    <span>TWEAKS</span>
+    <span class="x" id="tweaksX">×</span>
+  </header>
+  <div class="row">
+    <label>Theme</label>
+    <div class="seg" id="themeSeg">
+      <button data-theme="light">Light</button>
+      <button data-theme="dark">Dark</button>
+      <button data-theme="custom">Custom</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ---------- Theme ----------
+  function applyTweaks(t){
+    document.documentElement.setAttribute('data-theme', t.theme || 'light');
+    document.querySelectorAll('#themeSeg button').forEach(b=>{
+      b.classList.toggle('on', b.dataset.theme === (t.theme || 'light'));
+    });
+  }
+  applyTweaks(TWEAKS);
+
+  // ---------- Clock ----------
+  function tick(){
+    const d = new Date();
+    const hh = String(d.getHours()).padStart(2,'0');
+    const mm = String(d.getMinutes()).padStart(2,'0');
+    const ss = String(d.getSeconds()).padStart(2,'0');
+    const s = hh+':'+mm+':'+ss+' KST';
+    const c = document.getElementById('clock'); if(c) c.textContent = s;
+    const c2 = document.getElementById('clock2'); if(c2) c2.textContent = s;
+  }
+  tick(); setInterval(tick,1000);
+
+  // ---------- Scroll progress ----------
+  const prog = document.getElementById('progress');
+  function updateProgress(){
+    const h = document.documentElement;
+    const max = h.scrollHeight - h.clientHeight;
+    const pct = max > 0 ? (h.scrollTop / max) * 100 : 0;
+    prog.style.width = pct + '%';
+  }
+
+  // ---------- Active section (top nav + rail) ----------
+  const sections = ['hero','about','work','resume','contact'];
+  function updateActive(){
+    const mid = window.scrollY + window.innerHeight * 0.35;
+    let current = 'hero';
+    for(const id of sections){
+      const el = document.getElementById(id);
+      if(!el) continue;
+      if(el.offsetTop <= mid) current = id;
+    }
+    document.querySelectorAll('[data-nav]').forEach(a=>{
+      a.setAttribute('aria-current', a.dataset.nav === current ? 'true':'false');
+    });
+    document.querySelectorAll('[data-rail]').forEach(a=>{
+      a.classList.toggle('on', a.dataset.rail === current);
+    });
+  }
+
+  // ---------- Reveal on scroll ----------
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, {threshold: 0.12});
+  document.querySelectorAll('.reveal, .reveal-stagger').forEach(el=>io.observe(el));
+
+  // ---------- Parallax on case visuals ----------
+  const parallaxes = Array.from(document.querySelectorAll('.case .parallax'));
+  function updateParallax(){
+    const vh = window.innerHeight;
+    for(const p of parallaxes){
+      const r = p.getBoundingClientRect();
+      const center = r.top + r.height/2;
+      const delta = (center - vh/2) / vh; // -1..1 roughly
+      const py = Math.max(-24, Math.min(24, -delta * 28));
+      p.style.setProperty('--py', py + 'px');
+    }
+  }
+
+  // ---------- Case toggle ----------
+  document.querySelectorAll('[data-toggle]').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      e.preventDefault();
+      const c = btn.closest('[data-case]');
+      const open = c.classList.toggle('open');
+      btn.textContent = open ? 'Close case study' : 'Read case study';
+      updateParallax();
+    });
+  });
+
+  // ---------- Smooth scroll for nav ----------
+  document.querySelectorAll('a[href^="#"]').forEach(a=>{
+    a.addEventListener('click', (e)=>{
+      const id = a.getAttribute('href').slice(1);
+      const el = document.getElementById(id);
+      if(!el) return;
+      e.preventDefault();
+      window.scrollTo({top: el.offsetTop - 8, behavior: 'smooth'});
+    });
+  });
+
+  // ---------- rAF loop for scroll-driven things ----------
+  let ticking = false;
+  window.addEventListener('scroll', ()=>{
+    if(!ticking){
+      requestAnimationFrame(()=>{
+        updateProgress();
+        updateActive();
+        updateParallax();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, {passive:true});
+  window.addEventListener('resize', ()=>{ updateProgress(); updateParallax(); });
+  updateProgress(); updateActive(); updateParallax();
+
+  // ---------- Tweak mode (host-driven) ----------
+  const tweaksEl = document.getElementById('tweaks');
+  const tweaksX = document.getElementById('tweaksX');
+
+  window.addEventListener('message', (ev)=>{
+    const d = ev.data || {};
+    if(d.type === '__activate_edit_mode'){ tweaksEl.classList.add('on'); }
+    if(d.type === '__deactivate_edit_mode'){ tweaksEl.classList.remove('on'); }
+  });
+  // Announce after listener is live
+  try { window.parent.postMessage({type:'__edit_mode_available'}, '*'); } catch(e){}
+
+  tweaksX.addEventListener('click', ()=> tweaksEl.classList.remove('on'));
+
+  document.querySelectorAll('#themeSeg button').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const theme = b.dataset.theme;
+      TWEAKS.theme = theme;
+      applyTweaks(TWEAKS);
+      try { window.parent.postMessage({type:'__edit_mode_set_keys', edits:{theme}}, '*'); } catch(e){}
+    });
+  });
+</script>
+</body>
+</html>
